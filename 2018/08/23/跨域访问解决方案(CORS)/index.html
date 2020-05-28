@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="丑小鸭" />
+   
+  <meta name="description" content="丑小鸭博客记录" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    跨域访问解决方案 |  丑小鸭的博客领地
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="丑小鸭的博客领地" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-跨域访问解决方案(CORS)" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  跨域访问解决方案
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/08/23/%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88(CORS)/" class="article-date">
+  <time datetime="2018-08-23T02:31:02.000Z" itemprop="datePublished">2018-08-23</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E8%83%BD%E6%8F%90%E5%8D%87/">技能提升</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">11 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <h1 id="跨域访问解决方案"><a href="#跨域访问解决方案" class="headerlink" title="跨域访问解决方案"></a>跨域访问解决方案</h1><h2 id="前后端分离"><a href="#前后端分离" class="headerlink" title="前后端分离"></a>前后端分离</h2><h3 id="前后端分离的好处"><a href="#前后端分离的好处" class="headerlink" title="前后端分离的好处"></a>前后端分离的好处</h3><blockquote>
+<p>最大的好处就是前端JS可以做很大部分的数据处理工作，对服务器的压力减小到最小。<br>后台错误不会直接反映到前台，错误接秒较为友好。<br>由于后台是很难去探知前台页面的分布情况，而这又是JS的强项，而JS又是无法独立和服务器进行通讯的。所以单单用后台去控制整体页面，又或者只靠JS完成效果，都会难度加大，前后台各尽其职可以最大程度的减少开发难度。</p>
+</blockquote>
+<h3 id="前后端分离的模式"><a href="#前后端分离的模式" class="headerlink" title="前后端分离的模式"></a>前后端分离的模式</h3><blockquote>
+<p>第一种只是单纯的前后端分离，实在物理层面上的，将View层的任务分配给前端，Controller和Model层给后端，这就存在一个问题，就是后端的同事需要去关注前端的展示逻辑、而前端只要存在变化，后端的数据处理需要做相应的改变。<br>第二种是基于职责层面上的分离，将View和Controller层分配的前端，后端只处理Model和业务处理，这就需要Controller使用Node.js，M-V-C对应的是JAVA/PHP-JAVASCRIPT、HTML、CSS-Node.js。</p>
+</blockquote>
+<h3 id="跨域问题存在的原因"><a href="#跨域问题存在的原因" class="headerlink" title="跨域问题存在的原因"></a>跨域问题存在的原因</h3><blockquote>
+<p>随着前后端分离技术的越来越盛行，跨域问题也逐渐凸显了出来。跨域问题的根本原因：因为浏览器收到同源策略的限制，当前域名的js只能读取同域下的窗口属性。什么叫做同源策略？就是不同的域名, 不同端口, 不同的协议不允许共享资源的，保障浏览器安全。同源策略是针对浏览器设置的门槛。如果绕过浏览就能实现跨域，所以说早期的跨域都是打着安全路数的擦边球，都可以认为是 hack 处理。这一段是我从别的地方cp过来的，大家将就着看吧。</p>
+</blockquote>
+<p>这里要注意的是，只有访问类型为xhr（XMLHttpRequest)的才会出现跨域。那么，我们如何处理跨域访问的问题呢？方法有三：</p>
+<ol>
+<li>修改浏览器的设置</li>
+<li>修改请求的方式：jsonp</li>
+<li>CORS</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="修改浏览器配置解决跨域"><a href="#修改浏览器配置解决跨域" class="headerlink" title="修改浏览器配置解决跨域"></a>修改浏览器配置解决跨域</h2><p>以Google Chrome为例，浏览器以–disable-web-security–user-data-dir模式打开即可。<br>右键点击浏览器快捷方式，在目标中输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;C:\ProgramFiles(x86)\Google\Chrome\Application\chrome.exe&quot; --disable-web-security--user-data-dir</span><br></pre></td></tr></table></figure>
+<p>代码即可解决（不推荐）。</p>
+<h2 id="使用jsonp解决跨域"><a href="#使用jsonp解决跨域" class="headerlink" title="使用jsonp解决跨域"></a>使用jsonp解决跨域</h2><ul>
+<li>JQuery中的正常AJAX请求代码片段</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#demo1"</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        url : <span class="string">'http://www.tpadmin.top/Index/Test/crossDomain'</span>,</span><br><span class="line">        data : &#123;&#125;,</span><br><span class="line">        type : <span class="string">'get'</span>,</span><br><span class="line">        success : <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">            <span class="comment">//No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://127.0.0.1' is therefore not allowed access. 在执行时候报出的错误，这代表了跨域错误</span></span><br><span class="line">            alert(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/001.png" alt="跨域访问错误"></p>
+<ul>
+<li>JQuery中的使用JSONP的AJAX请求代码：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#demo2"</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        url : <span class="string">'http://www.tpadmin.top/Index/Test/crossDomain'</span>,</span><br><span class="line">        data : &#123;&#125;,</span><br><span class="line">        type : <span class="string">'get'</span>,</span><br><span class="line">        dataType : <span class="string">'jsonp'</span>,</span><br><span class="line">        success : <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">            alert(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/002.png" alt="jsonp跨域访问错误"></p>
+<p>这时候我们看到 请求的网址自动变成了<code>http://www.tpadmin.top/Index/Test/crossDomain?callback=jQuery331015214102388989237_1534993962395&amp;_=1534993962396</code>，这是为什么呢？原来由于跨域访问的只限制xhr类型的请求（上文中已经说了），所以js中就利用了这一特点，让服务端不在返回的是一个JSON格式的数据，而是返回一段JS代码，将JSON的数据以参数的形式传递到这个函数中，而函数的名称就是callback参数的值，所以我们还需要修改服务端的代码，代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    $callback = <span class="keyword">isset</span>($_GET[<span class="string">'callback'</span>])?$_GET[<span class="string">'callback'</span>]:<span class="string">''</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">empty</span>($callback)) &#123;</span><br><span class="line">        $arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line">        $data = json_encode($arr);</span><br><span class="line">        <span class="keyword">exit</span>($callback . <span class="string">'('</span> . $data . <span class="string">')'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/003.png" alt="jsonp解决跨域访问"></p>
+<p>OK，现在问题解决了，但是JSONP存在着诸多限制，下面将列出两个个我知道的：</p>
+<ul>
+<li>JSONP只支持GET请求，什么？你要提交表单，sorry，此路不通</li>
+<li>它只支持跨域HTTP请求</li>
+</ul>
+<p>虽然只有两个，但是让很多人不得不放弃它，所以出现了下面的解决办法。</p>
+<h2 id="CORS解决跨域"><a href="#CORS解决跨域" class="headerlink" title="CORS解决跨域"></a>CORS解决跨域</h2><blockquote>
+<p>回归问题本质，跨域问题为什么会产生，上面已经说了，是由于浏览器的限制，那么在执行过程中有什么不同，下面两张度分析一下（主要看请求头的部分）：</p>
+</blockquote>
+<p>这是非跨域请求</p>
+<p><img src="./image/002/004.png" alt="非跨域访问"></p>
+<p>这是跨域请求</p>
+<p><img src="./image/002/005.png" alt="跨域访问"></p>
+<p>这时我们发现跨域访问的请求头中存在Origin的字段，用来记录当前的访问域名，我们可以再服务端增加一个响应头Access-Control-Allow-Origin来告诉浏览器我们支持它获取就可以了，代码实现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Origin:http://127.0.0.1'</span>);</span><br><span class="line">$arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line"><span class="keyword">echo</span> $data = json_encode($arr);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>那如果我有多个域名进行跨域访问呢?</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$requestHeader = getallheaders();</span><br><span class="line">$origin = <span class="keyword">isset</span>($requestHeader[<span class="string">'Origin'</span>])?$requestHeader[<span class="string">'Origin'</span>]:<span class="string">''</span>;</span><br><span class="line"><span class="keyword">switch</span> ($origin) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://127.0.0.1'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://127.0.0.1'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://localhost'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://localhost'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">$arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line"><span class="keyword">echo</span> $data = json_encode($arr);</span><br><span class="line"><span class="comment">//注意，不支持下面这种写法</span></span><br><span class="line"><span class="comment">//header('Access-Control-Allow-Origin:http://localhost,http://127.0.0.1');</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>或者直接写成（很不安全，不推荐这么写）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Origin:*'</span>);</span><br><span class="line">$arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line"><span class="keyword">echo</span> $data = json_encode($arr);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>到这里，其实已经结束了，但还有一些其他的特殊情况:</p>
+<ul>
+<li>请求方法不是GET、HEAD、POST</li>
+<li>请求头中存在自定义头</li>
+<li>Content-Type不是text/plain、multipart/form-data、application/x-www-form-urlencoded</li>
+<li>希望获取到服务端的Cookie</li>
+</ul>
+<p>为了应对种种限制，我们再来看一段代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#demo1"</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        url : <span class="string">'http://cui.tpadmin.top/crossDomain.php'</span>,</span><br><span class="line">        data : &#123;&#125;,</span><br><span class="line">        type : <span class="string">'PUT'</span>,</span><br><span class="line">        contentType : <span class="string">'application/json'</span>,</span><br><span class="line">        headers: &#123;</span><br><span class="line">            token:<span class="string">'asdfgqwerttyyazxcvbvb'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        success : <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">            alert(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/006.png" alt="非简单请求跨域问题"></p>
+<p>虽然我们在服务端加入了Access-Control-Allow-Origin响应头，但是如果出现上面所说的情况时，我们需要做一些特殊的设置，修改服务端代码为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//这里增加了两行代码</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Headers:Content-Type'</span>);</span><br><span class="line">header(<span class="string">'Access-Control-Allow-Methods:PUT'</span>);</span><br><span class="line">$requestHeader = getallheaders();</span><br><span class="line">$origin = <span class="keyword">isset</span>($requestHeader[<span class="string">'Origin'</span>])?$requestHeader[<span class="string">'Origin'</span>]:<span class="string">''</span>;</span><br><span class="line"><span class="keyword">switch</span> ($origin) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://127.0.0.1'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://127.0.0.1'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://localhost'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://localhost'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">$arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line"><span class="keyword">echo</span> $data = json_encode($arr);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/007.png" alt="非简单请求结果"></p>
+<p>这里虽然成功了，但是我们发现每次请求的时候会出现两条请求记录（这个可不是我请求了两次，看下面截图）</p>
+<p><img src="./image/002/008.png" alt="预检请求"><br><img src="./image/002/009.png" alt="预检请求"></p>
+<p>这里我们需要进行一下区分（简单请求模式与非简单请求模式）</p>
+<ol>
+<li>请求方法只能为GET、HEAD、POST</li>
+<li>请求头中无自定义头</li>
+<li>Content-Type必须为text/plain、multipart/form-data、application/x-www-form-urlencoded</li>
+</ol>
+<p>符合以上条件的为简单请求，否则为非简单请求，注意，非简单请求中，浏览器会默认发送两条请求，第一条为预检请求（OPTION），第二条为AJAX的请求，处于服务器的性能考量，我们需要将预检命令进行缓存，而不是每次都执行预检请求，我们可以修改代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Headers:Content-Type'</span>);</span><br><span class="line">header(<span class="string">'Access-Control-Allow-Methods:PUT'</span>);</span><br><span class="line"><span class="comment">//看这里</span></span><br><span class="line">header(<span class="string">'Access-Control-Max-Age:3600'</span>);</span><br><span class="line">$requestHeader = getallheaders();</span><br><span class="line">$origin = <span class="keyword">isset</span>($requestHeader[<span class="string">'Origin'</span>])?$requestHeader[<span class="string">'Origin'</span>]:<span class="string">''</span>;</span><br><span class="line"><span class="keyword">switch</span> ($origin) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://127.0.0.1'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://127.0.0.1'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'http://localhost'</span>:</span><br><span class="line">        header(<span class="string">'Access-Control-Allow-Origin:http://localhost'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">$arr = [<span class="string">'code'</span> =&gt; <span class="number">200</span>, <span class="string">'name'</span> =&gt; <span class="string">'cui'</span>];</span><br><span class="line"><span class="keyword">echo</span> $data = json_encode($arr);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="./image/002/010.png" alt="缓存预检请求"></p>
+<p>这次我请求了两次，发现第二次请求没有发送预检请求，新增加的代码代表允许缓存的时间（3600S）。</p>
+<p>另外还有一些常用的方法，我都放到这里了，有需要的小伙伴可以参考</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//支持Cookie</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Credentials:true'</span>);</span><br><span class="line"><span class="comment">//支持自定义头</span></span><br><span class="line">header(<span class="string">'Access-Control-Allow-Headers:token,Content-Type,...'</span>);﻿​</span><br><span class="line">由于篇幅有限，Cookie的例子小伙伴们自己做就可以了，使用Cookie的时候需要注意Access-Control-Allow-Origin不可设置为*。</span><br></pre></td></tr></table></figure>
+
+<h2 id="服务软件实现跨域"><a href="#服务软件实现跨域" class="headerlink" title="服务软件实现跨域"></a>服务软件实现跨域</h2><p>上面的例子实现了跨域访问，但是如果我不想在代码中修改，还有其他的方法吗，当然有了，我们可以直接修改服务软件，下面将从最常用的Apache与Nignx两个方面说明</p>
+<h3 id="基于Apache的服务"><a href="#基于Apache的服务" class="headerlink" title="基于Apache的服务"></a>基于Apache的服务</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">  ServerName localhost</span><br><span class="line">  ServerAlias localhost</span><br><span class="line">  DocumentRoot "$&#123;INSTALL_DIR&#125;/www"</span><br><span class="line">  </span><br><span class="line">  Header always set Access-Control-Allow-Header "PUT"</span><br><span class="line">  Header always set Access-Control-Allow-Credentials "true"</span><br><span class="line">  Header always set Access-Control-Max-Age "3600"</span><br><span class="line"><span class="meta">  #</span><span class="bash">这里设置的为全匹配</span></span><br><span class="line">  Header always set Access-Control-Allow-Origin "expr=%&#123;req:origin&#125;"</span><br><span class="line"><span class="meta">  #</span><span class="bash">这里设置的为全匹配</span></span><br><span class="line">  Header always set Access-Control-Allow-Headers "expr=%&#123;req:Access-Control-Allow-Headers&#125;"</span><br><span class="line">  </span><br><span class="line">  &lt;Directory "$&#123;INSTALL_DIR&#125;/www/"&gt;</span><br><span class="line">    Options +Indexes +Includes +FollowSymLinks +MultiViews</span><br><span class="line">    AllowOverride All</span><br><span class="line">    Require local</span><br><span class="line">  &lt;/Directory&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里说明一下，由于Apache都是模块管理，所以这里要想使用Header的话，需要加载mod_headers.so这个模块，去看一下自己的主配置文件，这个模块是否开启，如果没有开启，apache会启动失败的。(开启配置内容：LoadModule headers_module modules/mod_headers.so)</p>
+<p>由于本人学艺不精，Apache的配置中的判断没有完全闹懂，所以这里没有进行区分的匹配，如果有大神知道，请指导一下，不胜感激。</p>
+<h3 id="基于Nignx的服务"><a href="#基于Nignx的服务" class="headerlink" title="基于Nignx的服务"></a>基于Nignx的服务</h3><p>在nignx服务的配置中修改为如下代码（注意位置，这个例子是修改本地的nignx，没有域名，如果没有熟悉过nignx的小伙伴可以自行百度）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80 default_server;</span><br><span class="line">    listen       [::]:80 default_server;</span><br><span class="line">    server_name  _;</span><br><span class="line">    root         /usr/share/nginx/html;</span><br><span class="line">    # Load configuration files for the default server block.</span><br><span class="line">    include /etc/nginx/default.d/*.conf;</span><br><span class="line">    location / &#123;</span><br><span class="line">            #支持其他请求</span><br><span class="line">            add_header Access-Control-Allow-Methods PUT;</span><br><span class="line">            #设置预检请求的缓存</span><br><span class="line">            add_header Access-Control-Max-Age 3600;</span><br><span class="line">            #允许Cookie</span><br><span class="line">            add_header Access-Control-Allow-Credentials true;</span><br><span class="line">            #这里最好做判断，怕麻烦的话就写*，但是不建议</span><br><span class="line">            if ($http_origin = http://localhost)&#123;</span><br><span class="line">                    add_header Access-Control-Allow-Origin http://localhost;</span><br><span class="line">            &#125;</span><br><span class="line">            if ($http_origin = http://127.0.0.1)&#123;</span><br><span class="line">                    add_header Access-Control-Allow-Origin http://127.0.0.1;</span><br><span class="line">            &#125;</span><br><span class="line">            #为了方便，这样写了</span><br><span class="line">            add_header Access-Control-Allow-Headers $http_access_control_request_headers;</span><br><span class="line">            if ($request_method = OPTIONS)&#123;</span><br><span class="line">                    return 200;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    error_page 404 /404.html;</span><br><span class="line">        location = /40x.html &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    error_page 500 502 503 504 /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总之，跨域访问解决的方案多种多样，选择适合自己的就可以。</p>
+<p>最后说明一下，本篇文章完全根据自己的学习以及经验所写，在严谨性上肯定有不足的地方，希望能帮到小伙伴们，如果发现问题，请及时联系我，谢谢。</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://blog.tpadmin.top/2018/08/23/%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88(CORS)/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CORS/" rel="tag">CORS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="tag">前后端分离</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE/" rel="tag">跨域访问</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/12/20/MonogDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            MongoDB学习笔记
+          
+        </div>
+      </a>
+    
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '2af2a2b52f062767172a',
+    clientSecret: '5ff29b180d4a975e20c8f841217296a13844a703',
+    repo: 'cuixiaogang110',
+    owner: 'cuixiaogang110',
+    admin: ['cuixiaogang110'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> ‘cuixiaogang&#39;
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.jpg" alt="丑小鸭的博客领地"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tages">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['同是天涯沦落人，相逢何必曾相识', '莫道前路无知己，天下谁人不识君', ''],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+
+<script src="/js/clickLove.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
